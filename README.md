@@ -1,7 +1,9 @@
 # VaultPay - Secure P2P Lending & Transaction System
 
 > **Candidate Name:** Om Tank
+
 > **Role Applied:** Full Stack Python Developer
+
 > **Assignment Choice:** 2, though a **Hybrid Implementation** (Combined Assignment 1 & 2)
 
 ---
@@ -27,14 +29,14 @@ Instead of choosing just one assignment, I have implemented a **Hybrid System** 
 
 Both assignments were fully implemented within the scope of this single application.
 
-| Assignment         | Component           | Status  | Implementation Details                                                |
-| :----------------- | :------------------ | :------ | :-------------------------------------------------------------------- |
-| **1. Identity**    | **JWT Auth**        | ✅ Done | Implemented via `simplejwt` (Access/Refresh tokens).                  |
-| **1. Identity**    | **Encryption**      | ✅ Done | Aadhaar stored as AES-256 ciphertext in DB (`core.security`).         |
-| **1. Identity**    | **Profile API**     | ✅ Done | Decryption happens only on-demand via authenticated GET request.      |
-| **2. Transaction** | **Atomic Transfer** | ✅ Done | Wrapped in `transaction.atomic()` with `select_for_update()` locking. |
-| **2. Transaction** | **Audit Log**       | ✅ Done | Immutable `Transaction` model recorded for every transfer.            |
-| **2. Transaction** | **Real-Time UI**    | ✅ Done | Implemented Short Polling (3s interval) for instant balance updates.  |
+| Assignment         | Component           | Implementation Details                                                |
+| :----------------- | :------------------ | :-------------------------------------------------------------------- |
+| **1. Identity**    | **JWT Auth**        | Implemented via `simplejwt` (Access/Refresh tokens).                  |
+| **1. Identity**    | **Encryption**      | Aadhaar stored as AES-256 ciphertext in DB (`core.security`).         |
+| **1. Identity**    | **Profile API**     | Decryption happens only on-demand via authenticated GET request.      |
+| **2. Transaction** | **Atomic Transfer** | Wrapped in `transaction.atomic()` with `select_for_update()` locking. |
+| **2. Transaction** | **Audit Log**       | Immutable `Transaction` model recorded for every transfer.            |
+| **2. Transaction** | **Real-Time UI**    | Implemented Short Polling (3s interval) for instant balance updates.  |
 
 ---
 
@@ -45,50 +47,6 @@ Both assignments were fully implemented within the scope of this single applicat
 - **Data Security:** Aadhaar numbers are encrypted _at rest_ using Fernet (AES-256).
 - **Real-Time UX:** Frontend uses TanStack Query for immediate balance updates and "Flash" notifications, mimicking high-frequency trading apps.
 - **Analytics:** Integrated visual cash-flow charts using `recharts`.
-
----
-
-## 🛠 Technology Stack
-
-| Area           | Technology                       | Reason for Choice                                                     |
-| :------------- | :------------------------------- | :-------------------------------------------------------------------- |
-| **Backend**    | Python, Django, DRF              | Robust ORM for complex transaction management (`transaction.atomic`). |
-| **Database**   | SQLite (Dev) / PostgreSQL (Prod) | ACID compliance is mandatory for financial ledgers.                   |
-| **Frontend**   | React, Vite, Tailwind CSS        | Fast component rendering and modern accessible UI.                    |
-| **State Mgmt** | TanStack Query (React Query)     | Efficient server-state management and auto-polling.                   |
-| **Security**   | `cryptography` (Fernet)          | Standard library for symmetric encryption.                            |
-| **DevOps**     | Docker                           | Containerized environment for consistent deployment.                  |
-
----
-
-## 📸 Database Schema
-
-### 1. User Model (`users_user`)
-
-Extends AbstractUser to include financial and security fields.
-
-- `id`: PK
-- `email`: Unique Index (Login ID)
-- `wallet_balance`: **Decimal(12, 2)** (Crucial: Never use Float for money)
-- `aadhaar_encrypted`: **TextField** (Stores the AES-256 Ciphertext)
-
-### 2. Transaction Ledger (`wallet_transaction`)
-
-An immutable log of money movement.
-
-- `reference_id`: UUID (Unique Transaction Reference)
-- `sender_id`: FK -> User
-- `receiver_id`: FK -> User
-- `amount`: Decimal
-- `status`: Enum (SUCCESS, FAILED, PENDING)
-
-### 3. Idempotency Log (`wallet_idempotencylog`)
-
-Ensures safety against network retries.
-
-- `key`: UUID (Header from Frontend)
-- `user_id`: FK -> User
-- `response_body`: JSON (The cached response)
 
 ---
 
@@ -147,6 +105,19 @@ To test immediately without registering:
 
 ---
 
+## 🛠 Technology Stack
+
+| Area           | Technology                       | Reason for Choice                                                     |
+| :------------- | :------------------------------- | :-------------------------------------------------------------------- |
+| **Backend**    | Python, Django, DRF              | Robust ORM for complex transaction management (`transaction.atomic`). |
+| **Database**   | SQLite (Dev) / PostgreSQL (Prod) | ACID compliance is mandatory for financial ledgers.                   |
+| **Frontend**   | React, Vite, Tailwind CSS        | Fast component rendering and modern accessible UI.                    |
+| **State Mgmt** | TanStack Query (React Query)     | Efficient server-state management and auto-polling.                   |
+| **Security**   | `cryptography` (Fernet)          | Standard library for symmetric encryption.                            |
+| **DevOps**     | Docker                           | Containerized environment for consistent deployment.                  |
+
+---
+
 ## 📡 API Documentation
 
 ### Auth & Identity
@@ -163,6 +134,37 @@ To test immediately without registering:
 | :----- | :---------------------- | :---------------------------------------------------------- |
 | `POST` | `/api/wallet/transfer/` | **Atomic.** Requires `Idempotency-Key` header. Locks rows.  |
 | `GET`  | `/api/wallet/history/`  | Returns paginated list of transactions (Real-time polling). |
+
+---
+
+## 📸 Database Schema
+
+### 1. User Model (`users_user`)
+
+Extends AbstractUser to include financial and security fields.
+
+- `id`: PK
+- `email`: Unique Index (Login ID)
+- `wallet_balance`: **Decimal(12, 2)** (Crucial: Never use Float for money)
+- `aadhaar_encrypted`: **TextField** (Stores the AES-256 Ciphertext)
+
+### 2. Transaction Ledger (`wallet_transaction`)
+
+An immutable log of money movement.
+
+- `reference_id`: UUID (Unique Transaction Reference)
+- `sender_id`: FK -> User
+- `receiver_id`: FK -> User
+- `amount`: Decimal
+- `status`: Enum (SUCCESS, FAILED, PENDING)
+
+### 3. Idempotency Log (`wallet_idempotencylog`)
+
+Ensures safety against network retries.
+
+- `key`: UUID (Header from Frontend)
+- `user_id`: FK -> User
+- `response_body`: JSON (The cached response)
 
 ---
 
@@ -190,12 +192,12 @@ AI tools significantly accelerated the boilerplate phase, allowing me to focus o
 
 ### 1. Dashboard (Real-Time Balance & History)
 
-_[Insert Screenshot of Dashboard]_
+![Dashboard image here](image.png)
 
 ### 2. Secure Profile (Masked vs Decrypted Aadhaar)
 
-_[Insert Screenshot of Profile Card]_
+![alt text](image-1.png) ![alt text](image-2.png)
 
 ### 3. Database Admin (Encrypted Data at Rest)
 
-_[Insert Screenshot of Django Admin showing cipher text]_
+![alt text](image-3.png)
