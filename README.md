@@ -168,23 +168,30 @@ Ensures safety against network retries.
 
 ---
 
-## 🤖 AI Flavor: Tool Usage Log (MANDATORY)
+---
+
+## 🤖 AI Flavor: Tool Usage Log
 
 **Effectiveness Score:** **5/5**
 
 **Justification:**
-AI tools significantly accelerated the boilerplate phase, allowing me to focus on high-level architectural decisions (like concurrency locking and security patterns). Specifically, generating realistic seed data and unit tests saved ~4 hours of manual work.
+AI tools were utilized as a "Senior Pair Programmer" throughout the lifecycle. Beyond just generating boilerplate, the AI was instrumental in making high-level architectural decisions (like the Hybrid Assignment approach), implementing complex concurrency patterns (row-locking), and debugging specific integration issues between Django and React. This reduced the estimated development time from ~3 days to ~8 hours.
 
 ### AI-Assisted Tasks List
 
-| Area                | Task Detail                                                                                                                                          | Tool Used          |
-| :------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
-| **Security Logic**  | Generated the `VaultSecurity` utility class for AES-256 encryption/decryption using `cryptography`, ensuring proper key handling.                    | Gemini (AI Studio) |
-| **Database Models** | Generated the initial Django models for `User` (Custom Auth) and `Transaction`, including the `DecimalField` configurations for financial precision. | Gemini (AI Studio) |
-| **Business Logic**  | Assisted in writing the `TransferFundsView` logic, specifically the `select_for_update()` block to prevent Deadlocks by sorting User IDs.            | Gemini (AI Studio) |
-| **Frontend UI**     | Generated React components for `Login`, `Register`, and `Dashboard`, including Tailwind CSS classes for the "Flashing Balance" animation.            | Gemini (AI Studio) |
-| **Data Generation** | Wrote the `seed_data.py` management command using `Faker` to populate the database with Indian names and realistic transaction history.              | Gemini (AI Studio) |
-| **Testing**         | Wrote a `pytest` script to simulate **Race Conditions** (simultaneous requests) to verify that the locking logic prevents double-spending.           | Gemini (AI Studio) |
+| Area                        | Task Detail                                                                                                                                                                | Tool Used          |
+| :-------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------- |
+| **Backend Setup**           | Generated the complete Django project structure, including the split into `core`, `users`, and `wallet` apps, and configured `settings.py` for JWT Auth and CORS.          | Gemini (AI Studio) |
+| **Database Modeling**       | Designed and generated the `User` model (custom Auth), `Transaction` ledger, and `IdempotencyLog` models, specifically enforcing `DecimalField` for financial precision.   | Gemini (AI Studio) |
+| **Security Logic**          | Wrote the `VaultSecurity` utility class to handle **AES-256 encryption/decryption** for the Aadhaar field using the `cryptography` library.                                | Gemini (AI Studio) |
+| **Complex Business Logic**  | Implemented the `TransferFundsView` with **Atomic Transactions** (`transaction.atomic`) and **Row-Level Locking** (`select_for_update`) to prevent Race Conditions.        | Gemini (AI Studio) |
+| **Reliability Engineering** | Designed the **Idempotency** logic to handle network retries, including generating the middleware logic to cache and return previous responses for duplicate request keys. | Gemini (AI Studio) |
+| **Frontend Architecture**   | Set up the React + Vite environment and generated the **Axios Interceptor** to automatically attach JWT tokens to requests and handle 401 redirects.                       | Gemini (AI Studio) |
+| **UI Development**          | Generated React components for `Login`, `Register`, and `Dashboard`, including the logic for **Optimistic UI updates** and **Tailwind CSS** styling.                       | Gemini (AI Studio) |
+| **UX Animations**           | Created the `FlashingBalance` component logic to visually indicate real-time financial changes (Red/Green flash) using React `useEffect` hooks.                            | Gemini (AI Studio) |
+| **Debugging**               | Diagnosed and fixed the "UUID not JSON serializable" error in the transaction view and identified the missing **Pagination** configuration in DRF settings.                | Gemini (AI Studio) |
+| **Data Generation**         | Wrote the `seed_data.py` management command using `Faker` to populate the database with 20 realistic Indian users and 100 linked transactions for load testing.            | Gemini (AI Studio) |
+| **Testing**                 | Wrote a `pytest` script (`test_ai_generated.py`) to simulate concurrent API requests, verifying that the database locking mechanism successfully prevents double-spending. | Gemini (AI Studio) |
 
 ---
 
@@ -192,12 +199,12 @@ AI tools significantly accelerated the boilerplate phase, allowing me to focus o
 
 ### 1. Dashboard (Real-Time Balance & History)
 
-![Dashboard image here](image.png)
+![Dashboard image here](images/image.png)
 
 ### 2. Secure Profile (Masked vs Decrypted Aadhaar)
 
-![alt text](image-1.png) ![alt text](image-2.png)
+![alt text](images/image-1.png) ![alt text](images/image-2.png)
 
 ### 3. Database Admin (Encrypted Data at Rest)
 
-![alt text](image-3.png)
+![alt text](images/image-3.png)
