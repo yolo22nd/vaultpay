@@ -1,13 +1,11 @@
-Here is the polished, final `README.md`. I have integrated your changes, moved the links to the top, added the specific **Task Fulfillment Checklist** (to prove you did both assignments), and expanded the **AI Usage Log** to cover the full scope of the implementation.
-
-Copy this file exactly.
-
 ---
 
 # VaultPay - Secure P2P Lending & Transaction System
 
 > **Candidate Name:** Om Tank
+
 > **Role Applied:** Full Stack Python Developer
+
 > **Assignment Choice:** 2, though a **Hybrid Implementation** (Combined Assignment 1 & 2)
 
 ---
@@ -107,47 +105,41 @@ Ensures safety against network retries.
 
 ### 1. Backend Setup
 
+```bash
 # Navigate to backend
-
 cd backend
 
 # Create and Activate Virtual Environment
-
 python -m venv venv
-
 # Windows: venv\Scripts\activate
-
 # Mac/Linux: source venv/bin/activate
 
 # Install Dependencies
-
 pip install -r requirements.txt
 
 # Run Migrations
-
 python manage.py migrate
 
 # Seed Data (Crucial Step!)
-
 # This uses AI-generated logic to populate the DB with 20 users and 100 transactions
-
 python manage.py seed_data
 
 # Start Server
+python manage.py runserver
+```
 
 ### 2. Frontend Setup
 
+```bash
 # Navigate to frontend
-
 cd frontend
 
 # Install Dependencies
-
 npm install
 
 # Start Development Server
-
 npm run dev
+```
 
 ### 3. Login Credentials (For Testing)
 
