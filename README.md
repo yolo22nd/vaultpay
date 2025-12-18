@@ -1,11 +1,7 @@
----
-
 # VaultPay - Secure P2P Lending & Transaction System
 
 > **Candidate Name:** Om Tank
-
 > **Role Applied:** Full Stack Python Developer
-
 > **Assignment Choice:** 2, though a **Hybrid Implementation** (Combined Assignment 1 & 2)
 
 ---
