@@ -168,8 +168,6 @@ Ensures safety against network retries.
 
 ---
 
----
-
 ## 🤖 AI Flavor: Tool Usage Log
 
 **Effectiveness Score:** **5/5**
