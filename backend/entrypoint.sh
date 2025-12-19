@@ -1,22 +1,32 @@
 #!/bin/sh
-
-# Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "Waiting for PostgreSQL..."
-# Simple wait loop (Postgres usually takes a few seconds to start in Docker)
-while ! nc -z db 5432; do
-  sleep 0.1
-done
-echo "PostgreSQL started"
+# --- CRITICAL FIX: Tell Python where settings are ---
+export DJANGO_SETTINGS_MODULE=config.settings
 
-# Apply database migrations
+if [ -z "$DATABASE_URL" ]; then
+    echo "Running locally..."
+    while ! nc -z db 5432; do sleep 0.1; done
+else
+    echo "Running on Cloud..."
+fi
+
 echo "Applying database migrations..."
 python manage.py migrate
 
-# Seed data (Optional: Uncomment if you want fresh data every restart)
-python manage.py seed_data
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
 
-# Start server (Use Gunicorn for production performance)
-echo "Starting Gunicorn Server..."
+# Check User Count with explicit settings export (Just to be safe)
+echo "Checking database state..."
+USER_COUNT=$(python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.contrib.auth import get_user_model; print(get_user_model().objects.count())")
+
+if [ "$USER_COUNT" -eq "0" ]; then
+    echo "Database empty. Seeding data..."
+    python manage.py seed_data
+else
+    echo "Database already has $USER_COUNT users. Skipping seed."
+fi
+
+echo "Starting Gunicorn..."
 exec gunicorn config.wsgi:application --bind 0.0.0.0:8000

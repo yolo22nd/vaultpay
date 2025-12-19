@@ -8,16 +8,21 @@ ENV PYTHONUNBUFFERED 1
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies (needed for Postgres and Netcat)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     netcat-openbsd \
     gcc \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
+# Install python dependencies via requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# --- THE BRUTE FORCE FIX ---
+# Explicitly install the missing cloud packages to ensure they exist
+RUN pip install dj-database-url whitenoise gunicorn
+# ---------------------------
 
 # Copy project
 COPY . .

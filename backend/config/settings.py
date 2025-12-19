@@ -1,11 +1,13 @@
 import os
 from pathlib import Path
 from datetime import timedelta
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass # In production, we don't need dotenv, variables are set in Azure
 import dj_database_url # <--- Import at top
 
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,7 +73,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_URL / 'db.sqlite3'}",
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600
     )
 }
@@ -133,9 +135,17 @@ SIMPLE_JWT = {
 
 ALLOWED_HOSTS = ['*'] # In production, restrict this to your specific azure domain
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://vaultpay-backend-iays.onrender.com', 
+    'https://*.azurewebsites.net', 
+    'https://*.vercel.app',
+]
+
+
+
 # 4. CORS Settings (Allow React Frontend)
-CORS_ALLOW_ALL_ORIGINS = True # Simplest for the assignment. 
-CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net', 'https://*.vercel.app']
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
 
 # 5. Custom Security Settings
 ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
