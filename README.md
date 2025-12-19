@@ -12,7 +12,7 @@
 
 - 🎥 **Video Demo:** [Insert Loom/YouTube Link Here]
 - 🌐 **Live Website:** [Insert Netlify/Render Link Here]
-- 🐳 **Docker Container:** [Insert DockerHub/Registry Link Here]
+- 🐳 **Docker:** Enabled (See `docker-compose.yml`)
 
 ---
 
@@ -22,7 +22,7 @@ VaultPay is a robust Fintech application designed to demonstrate **High-Concurre
 
 Instead of choosing just one assignment, I have implemented a **Hybrid System** that addresses the core engineering challenges of both tasks:
 
-1.  **From Assignment 1:** Secure Identity Management with **AES-256 Encryption** for sensitive government IDs (Aadhaar).
+1.  **From Assignment 1:** Secure **JWT authentication** and Identity Management with **AES-256 Encryption** for sensitive government IDs (Aadhaar).
 2.  **From Assignment 2:** Real-time Peer-to-Peer payments using **Atomic ACID Transactions**, **Row-Level Locking**, and **Idempotency** to ensure financial integrity.
 
 ### ✅ Task Fulfillment Checklist
@@ -40,6 +40,62 @@ Both assignments were fully implemented within the scope of this single applicat
 
 ---
 
+## ⚙️ Setup & Run Instructions
+
+You can run VaultPay using **Docker (Recommended)** or manually.
+
+### 🐳 Option 1: Docker (Fastest)
+
+Run the entire stack (Database, Backend, Frontend) with one command.
+
+```bash
+# 1. Build and Start Services
+docker-compose up --build
+
+# The container seeds postgres-db with random data
+```
+
+- **Frontend:** `http://localhost:5173`
+- **Backend API:** `http://localhost:8000`
+
+---
+
+### 🛠 Option 2: Manual Setup
+
+If you prefer running locally without Docker.
+
+#### 1. Backend Setup
+
+```bash
+cd backend
+python -m venv venv
+# Windows: venv\Scripts\activate  |  Mac/Linux: source venv/bin/activate
+
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_data  # Populates DB
+python manage.py runserver
+```
+
+#### 2. Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+### 🔑 Login Credentials (Pre-filled)
+
+The login page is pre-filled with these Superuser credentials for your convenience:
+
+- **Email:** `omtank22@gmail.com`
+- **Password:** `password`
+
+---
+
 ## 🚀 Key Engineering Features
 
 - **Concurrency Control:** Uses `select_for_update()` to lock database rows during transfers, preventing Race Conditions and Double-Spending attacks.
@@ -47,61 +103,6 @@ Both assignments were fully implemented within the scope of this single applicat
 - **Data Security:** Aadhaar numbers are encrypted _at rest_ using Fernet (AES-256).
 - **Real-Time UX:** Frontend uses TanStack Query for immediate balance updates and "Flash" notifications, mimicking high-frequency trading apps.
 - **Analytics:** Integrated visual cash-flow charts using `recharts`.
-
----
-
-## ⚙️ Setup & Run Instructions
-
-### Prerequisites
-
-- Node.js (v18+)
-- Python (v3.10+)
-
-### 1. Backend Setup
-
-```bash
-# Navigate to backend
-cd backend
-
-# Create and Activate Virtual Environment
-python -m venv venv
-# Windows: venv\Scripts\activate
-# Mac/Linux: source venv/bin/activate
-
-# Install Dependencies
-pip install -r requirements.txt
-
-# Run Migrations
-python manage.py migrate
-
-# Seed Data (Crucial Step!)
-# This uses AI-generated logic to populate the DB with 20 users and 100 transactions
-python manage.py seed_data
-
-# Start Server
-python manage.py runserver
-```
-
-### 2. Frontend Setup
-
-```bash
-# Navigate to frontend
-cd frontend
-
-# Install Dependencies
-npm install
-
-# Start Development Server
-npm run dev
-```
-
-### 3. Login Credentials (For Testing)
-
-To test immediately without registering:
-
-- **Superuser Email:** `omtank22@gmail.com`
-- **Password:** `password`
-  _(Or use the Registration page to create a new user with an Aadhaar ID)_
 
 ---
 

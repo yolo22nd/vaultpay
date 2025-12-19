@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url # <--- Import at top
+
 
 load_dotenv()
 
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Must be top
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # <--- Add this after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,11 +68,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # Defaulting to SQLite for easy local setup. We can swap to Postgres in Docker later.
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_URL / 'db.sqlite3'}",
+        conn_max_age=600
+    )
 }
 
 # Password validation
@@ -85,6 +89,11 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata' # Set to your local time
 USE_I18N = True
 USE_TZ = True
+
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
@@ -114,7 +123,6 @@ REST_FRAMEWORK = {
 }
 
 
-
 # 3. JWT Settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -123,8 +131,11 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+ALLOWED_HOSTS = ['*'] # In production, restrict this to your specific azure domain
+
 # 4. CORS Settings (Allow React Frontend)
-CORS_ALLOW_ALL_ORIGINS = True # For dev only. In prod, whitelist the domain.
+CORS_ALLOW_ALL_ORIGINS = True # Simplest for the assignment. 
+CSRF_TRUSTED_ORIGINS = ['https://*.azurewebsites.net', 'https://*.vercel.app']
 
 # 5. Custom Security Settings
 ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')

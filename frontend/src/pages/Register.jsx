@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { ShieldCheck, User, Mail, Lock, Phone, FileText, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Phone, FileText, ArrowRight } from 'lucide-react';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Register = () => {
         last_name: '',
         email: '',
         phone_number: '',
-        aadhaar_number: '', // Will be encrypted by backend
+        aadhaar_number: '',
         password: ''
     });
     const [loading, setLoading] = useState(false);
@@ -25,7 +26,6 @@ const Register = () => {
         setLoading(true);
         setError(null);
 
-        // Basic client-side validation
         if (formData.aadhaar_number.length < 12) {
             setError("Aadhaar number must be at least 12 digits.");
             setLoading(false);
@@ -34,10 +34,8 @@ const Register = () => {
 
         try {
             await api.post('users/register/', formData);
-            // On success, redirect to login with a success flag (optional)
             navigate('/login');
         } catch (err) {
-            // Handle Django validation errors (e.g., "Email already exists")
             const msg = err.response?.data?.email?.[0] || 
                         err.response?.data?.aadhaar_number?.[0] || 
                         "Registration failed. Please check your details.";
@@ -48,18 +46,20 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-darkbg py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+            <div className="absolute top-4 right-4">
+                <ThemeToggle />
+            </div>
+            
+            <div className="max-w-md w-full bg-white dark:bg-darkcard rounded-xl shadow-lg p-8 border border-gray-100 dark:border-darkborder transition-colors">
                 <div className="text-center mb-8">
-                    <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                        <ShieldCheck className="w-6 h-6 text-primary" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
-                    <p className="text-gray-500 mt-2">Join VaultPay Secure Network</p>
+                    <div className="mx-auto w-12 h-12 bg-primary dark:bg-zinc-100 rounded-lg flex items-center justify-center mb-4 text-white dark:text-black font-bold">V</div>
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-zinc-100">Create Account</h2>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Join VaultPay Secure Network</p>
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-lg">
+                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm rounded-lg">
                         {error}
                     </div>
                 )}
@@ -67,36 +67,36 @@ const Register = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">First Name</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
                             <input
                                 name="first_name"
                                 type="text"
                                 required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-darkborder dark:bg-darkcard dark:text-zinc-100 rounded-lg focus:ring-primary dark:focus:ring-indigo-500 focus:border-primary transition-colors"
                                 onChange={handleChange}
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
                             <input
                                 name="last_name"
                                 type="text"
                                 required
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-darkborder dark:bg-darkcard dark:text-zinc-100 rounded-lg focus:ring-primary dark:focus:ring-indigo-500 focus:border-primary transition-colors"
                                 onChange={handleChange}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Email Address</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
                         <div className="relative mt-1">
                             <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                             <input
                                 name="email"
                                 type="email"
                                 required
-                                className="block w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                className="block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-darkborder dark:bg-darkcard dark:text-zinc-100 rounded-lg focus:ring-primary dark:focus:ring-indigo-500 focus:border-primary transition-colors"
                                 placeholder="you@example.com"
                                 onChange={handleChange}
                             />
@@ -104,31 +104,28 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Aadhaar Number (National ID)</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Aadhaar Number (National ID)</label>
                         <div className="relative mt-1">
                             <FileText className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                             <input
                                 name="aadhaar_number"
                                 type="text"
                                 required
-                                className="block w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                className="block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-darkborder dark:bg-darkcard dark:text-zinc-100 rounded-lg focus:ring-primary dark:focus:ring-indigo-500 focus:border-primary transition-colors"
                                 placeholder="XXXX-XXXX-XXXX"
                                 onChange={handleChange}
                             />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1 flex items-center">
-                            <Lock className="w-3 h-3 mr-1" /> Encrypted with AES-256 at rest
-                        </p>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Phone</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone</label>
                         <div className="relative mt-1">
                             <Phone className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                             <input
                                 name="phone_number"
                                 type="tel"
-                                className="block w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                className="block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-darkborder dark:bg-darkcard dark:text-zinc-100 rounded-lg focus:ring-primary dark:focus:ring-indigo-500 focus:border-primary transition-colors"
                                 placeholder="+91 98765 43210"
                                 onChange={handleChange}
                             />
@@ -136,14 +133,14 @@ const Register = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
                         <div className="relative mt-1">
                             <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                             <input
                                 name="password"
                                 type="password"
                                 required
-                                className="block w-full pl-10 px-3 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
+                                className="block w-full pl-10 px-3 py-2 border border-gray-300 dark:border-darkborder dark:bg-darkcard dark:text-zinc-100 rounded-lg focus:ring-primary dark:focus:ring-indigo-500 focus:border-primary transition-colors"
                                 placeholder="••••••••"
                                 onChange={handleChange}
                             />
@@ -153,7 +150,7 @@ const Register = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-slate-800 transition-all disabled:opacity-50"
+                        className="w-full mt-4 bg-indigo-50 hover:bg-indigo-100 py-3 px-4 rounded-lg flex items-center justify-center transition-all border border-indigo-100 text-indigo-700 dark:bg-white/10 dark:hover:bg-white/20 dark:text-white disabled:opacity-50"
                     >
                         {loading ? 'Creating Account...' : (
                             <>
@@ -164,9 +161,9 @@ const Register = () => {
                 </form>
 
                 <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                         Already have an account?{' '}
-                        <Link to="/login" className="font-medium text-primary hover:text-slate-800">
+                        <Link to="/login" className="font-medium text-indigo-700 dark:text-indigo-400 hover:underline">
                             Sign in
                         </Link>
                     </p>

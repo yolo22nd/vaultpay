@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # 1. Database (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=vaultpay
+      - POSTGRES_USER=vaultpay
+      - POSTGRES_PASSWORD=securepassword
+    ports:
+      - "5432:5432" # Expose to localhost if you want to inspect via PGAdmin
+
+  # 2. Backend (Django)
+  backend:
+    build: ./backend
+    command: /app/entrypoint.sh
+    volumes:
+      - ./backend:/app # Hot-reload enabled for code changes
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=django-insecure-docker-key
+      - ENCRYPTION_KEY=JGnrDv8OSWKjKsDUU-jL84nxVpdLTlw1HStdH0lVt44= # hardcoded for testing
+      - DB_NAME=vaultpay
+      - DB_USER=vaultpay
+      - DB_PASSWORD=securepassword
+      - DB_HOST=db # Hostname matches service name above
+      - DB_PORT=5432
+    depends_on:
+      - db
+
+  # 3. Frontend (Nginx + React)
+  frontend:
+    build: 
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://127.0.0.1:8000/api/
+    ports:
+      - "5173:80" # Map container port 80 (Nginx) to localhost:5173
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

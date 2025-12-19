@@ -10,10 +10,8 @@ const TransferModal = ({ isOpen, onClose, userBalance }) => {
     const [error, setError] = useState(null);
     const queryClient = useQueryClient();
 
-    // The Mutation Logic (Optimistic Updates)
     const transferMutation = useMutation({
         mutationFn: async (data) => {
-            // GENERATE IDEMPOTENCY KEY (The "Extra Mile")
             const idemKey = uuidv4(); 
             return api.post('wallet/transfer/', { 
                 ...data, 
@@ -21,7 +19,6 @@ const TransferModal = ({ isOpen, onClose, userBalance }) => {
             });
         },
         onSuccess: () => {
-            // Force a re-fetch of balance and history immediately
             queryClient.invalidateQueries(['wallet']);
             queryClient.invalidateQueries(['transactions']);
             onClose();
@@ -47,25 +44,25 @@ const TransferModal = ({ isOpen, onClose, userBalance }) => {
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl transform transition-all">
+            <div className="bg-white dark:bg-darkcard rounded-2xl w-full max-w-md p-6 shadow-2xl transform transition-all border border-gray-100 dark:border-darkborder">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-gray-900">Send Money</h2>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X /></button>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Send Money</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-zinc-200"><X /></button>
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-center">
+                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded-lg flex items-center border border-red-100 dark:border-red-900/30">
                         <AlertCircle className="w-4 h-4 mr-2" /> {error}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Receiver Email</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Receiver Email</label>
                         <input
                             type="email"
                             required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-white focus:border-transparent outline-none transition-colors"
                             placeholder="friend@example.com"
                             value={receiverEmail}
                             onChange={(e) => setReceiverEmail(e.target.value)}
@@ -73,13 +70,13 @@ const TransferModal = ({ isOpen, onClose, userBalance }) => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Amount (INR)</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">Amount (INR)</label>
                         <input
                             type="number"
                             required
                             min="1"
                             step="0.01"
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-zinc-700 dark:bg-zinc-950 dark:text-white rounded-lg focus:ring-2 focus:ring-primary dark:focus:ring-white focus:border-transparent outline-none transition-colors"
                             placeholder="0.00"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
@@ -90,7 +87,7 @@ const TransferModal = ({ isOpen, onClose, userBalance }) => {
                         <button
                             type="submit"
                             disabled={transferMutation.isPending}
-                            className="w-full bg-primary hover:bg-slate-800 text-white py-3 rounded-lg font-medium transition-colors flex justify-center items-center disabled:opacity-50"
+                            className="w-full bg-primary hover:bg-slate-800 dark:bg-zinc-100 dark:hover:bg-white dark:text-black text-white py-3 rounded-lg font-medium transition-colors flex justify-center items-center disabled:opacity-50"
                         >
                             {transferMutation.isPending ? 'Processing...' : (
                                 <>Pay Securely <Send className="w-4 h-4 ml-2" /></>

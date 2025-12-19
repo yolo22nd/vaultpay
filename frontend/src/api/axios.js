@@ -1,14 +1,17 @@
 import axios from 'axios';
 
-// Base URL for Django Backend
+// 1. Look for environment variable first
+// 2. Fallback to localhost (for local dev without docker)
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/';
+
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/',
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Request Interceptor: Add Token
+// ... keep interceptors exactly as they are ...
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('access_token');
     if (token) {
@@ -17,10 +20,8 @@ api.interceptors.request.use((config) => {
     return config;
 }, (error) => Promise.reject(error));
 
-// Response Interceptor: Handle 401 (Unauthorized)
 api.interceptors.response.use((response) => response, async (error) => {
     if (error.response && error.response.status === 401) {
-        // Token expired or invalid
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         window.location.href = '/login';
