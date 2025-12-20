@@ -10,9 +10,9 @@
 
 ### 🔗 Quick Links
 
-- 🎥 **Video Demo:** [Insert Loom/YouTube Link Here]
+- 🎥 **Video Demo:** [https://youtu.be/rXeufO0FepI](https://youtu.be/rXeufO0FepI)
 - 🌐 **Live Website:** [https://vaultpay-pi.vercel.app/](https://vaultpay-pi.vercel.app/)
-- (Free tier render plan -> may experience some initial delays)
+  (Free tier render plan -> may experience some initial delays)
 - 🐳 **Docker:** Enabled (See `docker-compose.yml`)
 
 ---
