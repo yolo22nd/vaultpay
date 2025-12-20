@@ -11,7 +11,8 @@
 ### 🔗 Quick Links
 
 - 🎥 **Video Demo:** [Insert Loom/YouTube Link Here]
-- 🌐 **Live Website:** [Insert Netlify/Render Link Here]
+- 🌐 **Live Website:** [https://vaultpay-pi.vercel.app/](https://vaultpay-pi.vercel.app/)
+- (Free tier render plan -> may experience some initial delays)
 - 🐳 **Docker:** Enabled (See `docker-compose.yml`)
 
 ---

@@ -139,6 +139,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://vaultpay-backend-iays.onrender.com', 
     'https://*.azurewebsites.net', 
     'https://*.vercel.app',
+    "http://localhost:3000",
+    "http://localhost:5173",
 ]
 
 
